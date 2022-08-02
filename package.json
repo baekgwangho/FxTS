@@ -87,7 +87,6 @@
   },
   "lint-staged": {
     "*.(js|ts)": [
-      "eslint",
       "prettier --write",
       "git add"
     ],
