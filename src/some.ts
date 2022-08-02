@@ -3,7 +3,7 @@ import map from "./Lazy/map";
 import takeUntil from "./Lazy/takeUntil";
 import pipe from "./pipe";
 import identity from "./identity";
-import { isAsyncIterable, isIterable } from "./_internal/utils";
+import {isAsyncIterable, isIterable} from "./_internal/utils";
 import IterableInfer from "./types/IterableInfer";
 import ReturnValueType from "./types/ReturnValueType";
 import Arrow from "./types/Arrow";
@@ -52,47 +52,45 @@ function some<A extends readonly []>(
 function some<A, B = unknown>(f: (a: A) => B, iterable: Iterable<A>): boolean;
 
 function some<A, B = unknown>(
-  f: (a: A) => B,
-  iterable: AsyncIterable<A>,
+    f: (a: A) => B,
+    iterable: AsyncIterable<A>,
 ): Promise<boolean>;
 
-function some<
-  A extends Iterable<unknown> | AsyncIterable<unknown>,
-  B = unknown,
->(f: (a: IterableInfer<A>) => B): (a: A) => ReturnValueType<A, boolean>;
+function some<A extends Iterable<unknown> | AsyncIterable<unknown>,
+    B = unknown,
+    >(f: (a: IterableInfer<A>) => B): (a: A) => ReturnValueType<A, boolean>;
 
-function some<
-  A extends Iterable<unknown> | AsyncIterable<unknown>,
-  B = unknown,
->(
-  f: (a: IterableInfer<A>) => B,
-  iterable?: A,
+function some<A extends Iterable<unknown> | AsyncIterable<unknown>,
+    B = unknown,
+    >(
+    f: (a: IterableInfer<A>) => B,
+    iterable?: A,
 ): boolean | Promise<boolean> | ((iterable: A) => ReturnValueType<A, boolean>) {
-  if (iterable === undefined) {
-    return (iterable: A) => {
-      return some(f, iterable as any) as ReturnValueType<A, boolean>;
-    };
-  }
+    if (iterable === undefined) {
+        return (iterable: A) => {
+            return some(f, iterable as any) as ReturnValueType<A, boolean>;
+        };
+    }
 
-  if (isIterable<IterableInfer<A>>(iterable)) {
-    return pipe(
-      map(f, iterable),
-      takeUntil(identity),
-      reduce((a, b) => a || b),
-      Boolean,
-    );
-  }
+    if (isIterable<IterableInfer<A>>(iterable)) {
+        return pipe(
+            map(f, iterable),
+            takeUntil(identity),
+            reduce((a, b) => a || b),
+            Boolean,
+        );
+    }
 
-  if (isAsyncIterable<IterableInfer<A>>(iterable)) {
-    return pipe(
-      map(f, iterable),
-      takeUntil(identity),
-      reduce((a, b) => a || b),
-      Boolean,
-    );
-  }
+    if (isAsyncIterable<IterableInfer<A>>(iterable)) {
+        return pipe(
+            map(f, iterable),
+            takeUntil(identity),
+            reduce((a, b) => a || b),
+            Boolean,
+        );
+    }
 
-  throw new TypeError("'iterable' must be type of Iterable or AsyncIterable");
+    throw new TypeError("'iterable' must be type of Iterable or AsyncIterable");
 }
 
 export default some;
