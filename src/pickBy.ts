@@ -1,7 +1,7 @@
 import {
-  AsyncEntryPredicate,
-  ConditionalAsyncEntryPredicate,
-  EntryPredicate,
+    AsyncEntryPredicate,
+    ConditionalAsyncEntryPredicate,
+    EntryPredicate,
 } from "./types/EntryPredicate";
 import toArray from "./toArray";
 import filter from "./Lazy/filter";
@@ -9,7 +9,7 @@ import toAsync from "./Lazy/toAsync";
 import map from "./Lazy/map";
 import zip from "./Lazy/zip";
 import pipe from "./pipe";
-import { isPromise } from "./_internal/utils";
+import {isPromise} from "./_internal/utils";
 
 /**
  *
@@ -38,67 +38,67 @@ import { isPromise } from "./_internal/utils";
  */
 
 function pickBy<T extends object, F extends AsyncEntryPredicate<T>>(
-  f: F,
-  obj: T,
+    f: F,
+    obj: T,
 ): Promise<Partial<T>>;
 
 function pickBy<T extends object, F extends AsyncEntryPredicate<T>>(
-  f: F,
+    f: F,
 ): (obj: T) => Promise<Partial<T>>;
 
 function pickBy<T extends object, F extends EntryPredicate<T>>(
-  f: F,
-  obj: T,
+    f: F,
+    obj: T,
 ): Partial<T>;
 
 function pickBy<T extends object, F extends EntryPredicate<T>>(
-  f: F,
+    f: F,
 ): (obj: T) => Partial<T>;
 
 function pickBy<T extends object, F extends ConditionalAsyncEntryPredicate<T>>(
-  f: F,
-  obj: T,
+    f: F,
+    obj: T,
 ): Partial<T> | Promise<Partial<T>>;
 
 function pickBy<T extends object, F extends ConditionalAsyncEntryPredicate<T>>(
-  f: F,
+    f: F,
 ): (obj: T) => Partial<T> | Promise<Partial<T>>;
 
 function pickBy<T extends object, F extends ConditionalAsyncEntryPredicate<T>>(
-  f: F,
-  obj?: T,
+    f: F,
+    obj?: T,
 ):
-  | Partial<T>
-  | Promise<Partial<T>>
-  | ((obj: T) => Partial<T>)
-  | ((obj: T) => Promise<Partial<T>>)
-  | ((obj: T) => Partial<T> | Promise<Partial<T>>) {
-  if (obj === undefined) {
-    return (obj: T) => pickBy(f, obj);
-  }
+    | Partial<T>
+    | Promise<Partial<T>>
+    | ((obj: T) => Partial<T>)
+    | ((obj: T) => Promise<Partial<T>>)
+    | ((obj: T) => Partial<T> | Promise<Partial<T>>) {
+    if (obj === undefined) {
+        return (obj: T) => pickBy(f, obj);
+    }
 
-  const entries = Object.entries(obj);
-  const conditions = entries.map((entry) => f(entry as any));
-  const isAsync = conditions.some((c) => isPromise(c));
+    const entries = Object.entries(obj);
+    const conditions = entries.map((entry) => f(entry as any));
+    const isAsync = conditions.some((c) => isPromise(c));
 
-  if (isAsync) {
-    return pipe(
-      entries,
-      zip(toAsync(conditions)),
-      filter(([cond]) => cond),
-      map(([, entry]) => entry),
-      toArray,
-      Object.fromEntries,
-    ) as Promise<Partial<T>>;
-  } else {
-    return pipe(
-      entries,
-      zip(conditions),
-      filter(([cond]) => cond),
-      map(([, entry]) => entry),
-      Object.fromEntries,
-    ) as Partial<T>;
-  }
+    if (isAsync) {
+        return pipe(
+            entries,
+            zip(toAsync(conditions)),
+            filter(([cond]) => cond),
+            map(([, entry]) => entry),
+            toArray,
+            Object.fromEntries,
+        ) as Promise<Partial<T>>;
+    } else {
+        return pipe(
+            entries,
+            zip(conditions),
+            filter(([cond]) => cond),
+            map(([, entry]) => entry),
+            Object.fromEntries,
+        ) as Partial<T>;
+    }
 }
 
 export default pickBy;
