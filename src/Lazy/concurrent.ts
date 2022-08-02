@@ -152,6 +152,7 @@ function concurrent<A>(
   function recur() {
     if (finished || nextCallCount === resolvedItemCount) {
       return;
+      console.log("123");
     } else if (buffer.length > 0) {
       consumeBuffer();
     } else {
