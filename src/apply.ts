@@ -17,25 +17,25 @@ import Arrow from "./types/Arrow";
  */
 
 function apply<F extends Arrow, T extends Parameters<F>>(
-  f: F,
+    f: F,
 ): (args: T) => ReturnType<typeof f>;
 
 function apply<F extends Arrow, T extends Parameters<F>>(
-  f: F,
-  args: T,
+    f: F,
+    args: T,
 ): ReturnType<typeof f>;
 
 function apply<F extends Arrow, T extends Parameters<F>>(
-  f: F,
-  args?: T,
+    f: F,
+    args?: T,
 ):
-  | ReturnType<typeof f>
-  | ((args: Parameters<typeof f>) => ReturnType<typeof f>) {
-  if (args === undefined) {
-    return (args) => f(...args);
-  } else {
-    return f(...args);
-  }
+    | ReturnType<typeof f>
+    | ((args: Parameters<typeof f>) => ReturnType<typeof f>) {
+    if (args === undefined) {
+        return (args) => f(...args);
+    } else {
+        return f(...args);
+    }
 }
 
 export default apply;
